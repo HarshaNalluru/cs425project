@@ -1,0 +1,1 @@
+rm players_online.txt game_progress.txt word_now.txt number_of_players.txt server words_*
