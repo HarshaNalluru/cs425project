@@ -10,7 +10,7 @@
 
 #define ERROR -1
 #define BUFFER 1024
-#define PORT_NUMBER 9054
+#define PORT_NUMBER 9055
 // ./client harshan:123456789@127.0.0.1
 int main(int argc, char *argv[])
 {
@@ -87,7 +87,7 @@ int main(int argc, char *argv[])
 	}
 //
 
-	fgets(input, BUFFER, stdin);
+/*	fgets(input, BUFFER, stdin);
 	send(sock, input, strlen(input), 0);
 
 	len = recv(sock, output, BUFFER, 0);
@@ -121,7 +121,7 @@ int main(int argc, char *argv[])
 		printf("------------------------%s Downloaded..!\n", input);
 		fclose(file);
 	}
-
+*/
 	close(sock);
 
 	return 0;

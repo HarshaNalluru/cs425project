@@ -10,7 +10,7 @@
 
 #define ERROR -1
 #define MAX_DATA 1024
-#define PORT_NUMBER 9054
+#define PORT_NUMBER 9055
 #define BUFFER 1024
 
 int count_global = 0;
@@ -370,7 +370,7 @@ int main(int argc, char const *argv[])
 
 
 
-			data_len = recv(new, data, MAX_DATA, 0);
+/*			data_len = recv(new, data, MAX_DATA, 0);
 			data[data_len-1] = '\0';
 			char const* const filename = data;
 
@@ -398,7 +398,7 @@ int main(int argc, char const *argv[])
 			else{
 				char download[MAX_DATA] = "#Server: File Not Found";
 				send(new, download , strlen(download), 0);
-			}
+			}*/
 
 			printf("Client disconnected\n");
 			close(new);
