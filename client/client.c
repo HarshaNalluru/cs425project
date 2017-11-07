@@ -12,7 +12,7 @@
 
 #define ERROR -1
 #define BUFFER 1024
-#define PORT_NUMBER 9032
+#define PORT_NUMBER 9020
 // ./client harshan:123456789@127.0.0.1
 int main(int argc, char *argv[])
 {
@@ -29,6 +29,7 @@ int main(int argc, char *argv[])
 	}
 
 	char * str = argv[1];
+	char * roomName = argv[2];
 	//printf("%s\n", str);
 	char * username = strtok(str,":");
 	char * password = strtok(NULL, "@");
@@ -51,12 +52,19 @@ int main(int argc, char *argv[])
 	printf("%s\n", output);
 
 	send(sock, password, strlen(password), 0);
+
+	send(sock, roomName, strlen(roomName), 0);
 	len = recv(sock, output, BUFFER, 0);
 	output[len] = '\0';
 	printf("%s\n", output);
+	if(strcmp(output,"#Server: Room is full..! Choose a different room!!!\n")==0){
+		return 0;
+	}
 
 	char thank[BUFFER] = "Thanks ";
 	send(sock, thank, strlen(thank), 0);
+
+
 
 	strcpy(myusername,username);
 //Game Starts message
@@ -67,6 +75,7 @@ int main(int argc, char *argv[])
 	send(sock, thanks, strlen(thanks), 0);
 
 	char message[BUFFER];
+	char * penalty;
 	char * user;
 	int i = 0;
 	char lastCh = '\0';
@@ -183,8 +192,9 @@ int main(int argc, char *argv[])
 			word_now = strtok(message,":");
 			i++;
 			user = strtok(NULL, ":");
+			penalty = strtok(NULL, ":");
 			//user[] = '\0';
-			printf("#%s : %s\n",user,word_now);
+			printf("#%s : %s (Current game penalty: %s )\n",user,word_now,penalty);
 			lastCh = word_now[strlen(word_now)-1];
 			send(sock, thanks, strlen(thanks), 0);
 			
