@@ -1,3 +1,5 @@
+#include <iostream>   // std::cout
+#include <string>
 #include <stdio.h>
 #include <stdlib.h>      
 #include <sys/socket.h>
@@ -10,9 +12,10 @@
 #include <time.h>
 #include <ctype.h>
 
+using namespace std; 
 #define ERROR -1
 #define BUFFER 1024
-#define PORT_NUMBER 9032
+#define PORT_NUMBER 9040
 // ./client harshan:123456789@127.0.0.1
 int main(int argc, char *argv[])
 {
@@ -75,9 +78,9 @@ int main(int argc, char *argv[])
 	while(1){
 
 		len = recv(sock, message, BUFFER, 0);
-		message[len] = '\0';
 		if(strcmp(message,"It's your turn one\n")==0)
 		{
+			message[len] = '\0';
 			printf("---------------------------------------It's your turn\n Enter any word #%s :", myusername);	
 			time_t start = time(0);
 			double cpu_time_used;
@@ -126,6 +129,9 @@ int main(int argc, char *argv[])
 			}
 		}
 		else if (strcmp(message,"It's your turn\n")==0){
+
+			//printf("IF ---- %s\n", message);	
+			message[len] = '\0';
 			printf("---------------------------------------It's your turn\nProvide a word #%s :", myusername);	
 
 			time_t start = time(0);

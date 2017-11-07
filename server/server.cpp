@@ -1,3 +1,5 @@
+#include <iostream>   // std::cout
+#include <string>
 #include <stdio.h>
 #include <stdlib.h>      
 #include <sys/socket.h>
@@ -8,9 +10,10 @@
 #include <unistd.h>
 #include <arpa/inet.h>
 
+using namespace std; 
 #define ERROR -1
 #define MAX_DATA 1024
-#define PORT_NUMBER 9032
+#define PORT_NUMBER 9040	
 #define BUFFER 1024
 
 int count_global = 0;
@@ -19,7 +22,7 @@ int main(int argc, char const *argv[])
 	struct sockaddr_in server;
 	struct sockaddr_in client;
 	int sock;
-	int new;
+	int new_conn;
 	int sockaddr_len = sizeof(struct sockaddr_in);
 	int data_len;
 	int temp_len;
@@ -60,23 +63,23 @@ int main(int argc, char const *argv[])
 	}
 
 	while(1){
-		if ((new = accept(sock, (struct sockaddr *)&client, &sockaddr_len)) == ERROR){
+		if ((new_conn = accept(sock, (struct sockaddr *)&client, &sockaddr_len)) == ERROR){
 			perror("accept");
 			exit(-1);
 		}
 		if ( (PID = fork()) == -1 ) {
 			/* Failed to fork: Give up */
 			count = count+5;
-			close(new);
+			close(new_conn);
 			continue;
 		} 
 		else if ( PID > 0 ) {
 			/* Parent process: */
 			count++;
-			close(new);
+			close(new_conn);
 			continue;
 		}
-		printf("New client connected from port no. %d and IP %s\n", ntohs(client.sin_port), inet_ntoa(client.sin_addr) );
+		printf("new_conn client connected from port no. %d and IP %s\n", ntohs(client.sin_port), inet_ntoa(client.sin_addr) );
 		
 		char const* const filename = "users.txt";
 		FILE* file = fopen(filename, "r"); 
@@ -84,7 +87,7 @@ int main(int argc, char const *argv[])
 	    char last_word[1024];
 	    char user_status[1024];
 	    data_len = 1;
-	    data_len = recv(new, username, MAX_DATA, 0);
+	    data_len = recv(new_conn, username, MAX_DATA, 0);
 	    char * id;
 	    char * pass;
 	    int auth = 0;
@@ -98,8 +101,8 @@ int main(int argc, char const *argv[])
 	        if (strcmp(username,id) == 0){
 
 	        	char userok[MAX_DATA] = "#Server: Checking for the password...";
-	        	send(new, userok, strlen(userok), 0);
-	    		data_len = recv(new, password, MAX_DATA, 0);
+	        	send(new_conn, userok, strlen(userok), 0);
+	    		data_len = recv(new_conn, password, MAX_DATA, 0);
 	        	
 	        	if (strcmp(password,pass)==0){
 	        		auth = 1;
@@ -107,15 +110,15 @@ int main(int argc, char const *argv[])
 	        		strcpy(success, "#Server: Hello ");
     				strcat(success, username);
 		        	//printf("count == %d\n", count);
-		        	send(new, success, strlen(success), 0);
+		        	send(new_conn, success, strlen(success), 0);
 		        	break;
 	        	}
 	        	else{
 		        	char failed[MAX_DATA] = "#Server: Authentication Failure!!!";
-		        	send(new, failed, strlen(failed), 0);
+		        	send(new_conn, failed, strlen(failed), 0);
 
 					printf("Client disconnected\n");
-					close(new);
+					close(new_conn);
 	        	}
 	        }
 	    }
@@ -124,10 +127,10 @@ int main(int argc, char const *argv[])
 
 	    if (auth!=1){
         	char failed[MAX_DATA] = "#Server: Authentication Failure!!!";
-        	send(new, failed, strlen(failed), 0);
+        	send(new_conn, failed, strlen(failed), 0);
 			
 			printf("Client disconnected\n");
-			close(new);
+			close(new_conn);
 	    }
 	    else{
 			data_len = 1;
@@ -137,7 +140,7 @@ int main(int argc, char const *argv[])
 			FILE* file = fopen("number_of_players.txt", "r"); 
 			if (file){	
 				while (fgets(line, sizeof(line), file)) {
-					//send(new, line, strlen(line), 0);
+					//send(new_conn, line, strlen(line), 0);
 					//printf("#number_of_players : %s\n", line);
 					counting_players = atoi (line);
 					if(counting_players==number_of_players){
@@ -152,7 +155,7 @@ int main(int argc, char const *argv[])
 						fclose(file_w);
 						break;
 					}
-					//temp_len = recv(new, temp, MAX_DATA, 0);
+					//temp_len = recv(new_conn, temp, MAX_DATA, 0);
 					//printf("Client says : %s\n", temp);
 					//printf("%s", line);
 				}
@@ -164,7 +167,7 @@ int main(int argc, char const *argv[])
 				fclose(file_w);
 			}
 
-			data_len = recv(new, data, MAX_DATA, 0);
+			data_len = recv(new_conn, data, MAX_DATA, 0);
 			data[data_len-1] = '\0';
 			//printf("%s - %s\n",username,data);
 			int flag = 0;
@@ -191,8 +194,8 @@ int main(int argc, char const *argv[])
 			fprintf(file, "%s\n", username);
 			fclose(file);
 			char GameStarts[MAX_DATA] = "### Game Starts ###";
-			send(new, GameStarts, strlen(GameStarts), 0);
-			data_len = recv(new, data, MAX_DATA, 0);
+			send(new_conn, GameStarts, strlen(GameStarts), 0);
+			data_len = recv(new_conn, data, MAX_DATA, 0);
 			data[data_len-1] = '\0';
 			printf("%s - %s\n", data,username);
 
@@ -232,8 +235,8 @@ int main(int argc, char const *argv[])
 							fclose(latest);
 							if (strcmp(old_latest,last_word)!=0){
 								printf("lastword ------------ %s\n",last_word );
-								send(new, last_word, strlen(last_word), 0);
-								data_len = recv(new, temp, MAX_DATA, 0);
+								send(new_conn, last_word, strlen(last_word), 0);
+								data_len = recv(new_conn, temp, MAX_DATA, 0);
 								temp[data_len-1] = '\0';
 							}
 							strcpy(old_latest,last_word);	
@@ -248,30 +251,26 @@ int main(int argc, char const *argv[])
 					fgets(user_status, sizeof(user_status), file_game_progress);
 					fclose(file_game_progress);
 					if(user_status[count] == '1'){
-
 						printf("#%s : ", username);
 
 						//printf("It's %s's turn\n",username);
 						
 						//send 
 						char Turn[MAX_DATA] = "It's your turn\n";
-						send(new, Turn, strlen(Turn), 0);
+						send(new_conn, Turn, strlen(Turn), 0);
 						
 						//printf("sent it jus now to %s\n", username);
-						
 
-						//time_t start = time(0);
 						//recv
-						data_len = recv(new, data, MAX_DATA, 0);
-
+						data_len = recv(new_conn, data, MAX_DATA, 0);
 						data[data_len] = '\0';
 						printf("%s\n", data);
 
 
-						int penalty_len = recv(new, penalty, MAX_DATA, 0);
+						int penalty_len = recv(new_conn, penalty, MAX_DATA, 0);
 						penalty[penalty_len] = '\0';
 						//printf("%s\n", data);
-						
+
 
 						//store in word_now.txt
 						FILE* file_word_now = fopen("word_now.txt", "w");
@@ -339,17 +338,15 @@ int main(int argc, char const *argv[])
 						
 						//send 
 						char Turn[MAX_DATA] = "It's your turn one\n";
-						printf("%s\n",Turn );
-						//Turn[]
-						send(new, Turn, strlen(Turn), 0);
+						send(new_conn, Turn, strlen(Turn), 0);
 						
 						//recv
 						char word[MAX_DATA];
-						data_len = recv(new, word, MAX_DATA, 0);
+						data_len = recv(new_conn, word, MAX_DATA, 0);
 						word[data_len] = '\0';
 						printf("%s\n", word);
 
-						int penalty_len = recv(new, penalty, MAX_DATA, 0);
+						int penalty_len = recv(new_conn, penalty, MAX_DATA, 0);
 						penalty[penalty_len] = '\0';
 
 
@@ -388,7 +385,7 @@ int main(int argc, char const *argv[])
 
 
 
-/*			data_len = recv(new, data, MAX_DATA, 0);
+/*			data_len = recv(new_conn, data, MAX_DATA, 0);
 			data[data_len-1] = '\0';
 			char const* const filename = data;
 
@@ -399,15 +396,15 @@ int main(int argc, char const *argv[])
 				count_global = count;
 				printf("\n-------- count = %d\n",count);
 				printf("-------- count_global = %d\n",count_global);
-				send(new, download , strlen(download), 0);
+				send(new_conn, download , strlen(download), 0);
 				
-				data_len = recv(new, data, MAX_DATA, 0);
+				data_len = recv(new_conn, data, MAX_DATA, 0);
 				data[data_len-1] = '\0';
 
 				while (fgets(line, sizeof(line), file)) {
-					send(new, line, strlen(line), 0);
+					send(new_conn, line, strlen(line), 0);
 					//printf("Sent Line : %s\n", line);
-					temp_len = recv(new, temp, MAX_DATA, 0);
+					temp_len = recv(new_conn, temp, MAX_DATA, 0);
 					//printf("Client says : %s\n", temp);
 					//printf("%s", line);
 				}
@@ -415,11 +412,11 @@ int main(int argc, char const *argv[])
 			}
 			else{
 				char download[MAX_DATA] = "#Server: File Not Found";
-				send(new, download , strlen(download), 0);
+				send(new_conn, download , strlen(download), 0);
 			}*/
 
 			printf("Client disconnected\n");
-			close(new);
+			close(new_conn);
 	    }
 	}
 	return 0;
