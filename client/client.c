@@ -12,7 +12,7 @@
 
 #define ERROR -1
 #define BUFFER 1024
-#define PORT_NUMBER 9020
+#define PORT_NUMBER 9015
 // ./client harshan:123456789@127.0.0.1
 int main(int argc, char *argv[])
 {
@@ -57,7 +57,8 @@ int main(int argc, char *argv[])
 	len = recv(sock, output, BUFFER, 0);
 	output[len] = '\0';
 	printf("%s\n", output);
-	if(strcmp(output,"#Server: Room is full..! Choose a different room!!!\n")==0){
+	if(strcmp(output,"#Server: Room is full..! Choose a different room!!!")==0){
+		close(sock);
 		return 0;
 	}
 

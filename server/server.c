@@ -10,7 +10,7 @@
 
 #define ERROR -1
 #define MAX_DATA 1024
-#define PORT_NUMBER 9020
+#define PORT_NUMBER 9015
 #define BUFFER 1024
 
 int count_global = 0;
@@ -106,7 +106,7 @@ int main(int argc, char const *argv[])
 	        		auth = 1;
 		        	//printf("count == %d\n", count);
 		        	data_len = recv(new, roomName, MAX_DATA, 0);
-		        	char * num_players_file = malloc(strlen(roomName)+strlen("_number_of_players.txt"));
+		        	char * num_players_file = malloc(strlen(roomName)+strlen("_number_of_players.txt")+1);
 					strcpy(num_players_file, roomName);
 		    		strcat(num_players_file, "_number_of_players.txt");
 		        	FILE* file = fopen(num_players_file, "r"); 
@@ -123,6 +123,7 @@ int main(int argc, char const *argv[])
 								return 0;
 							}
 							else{
+								fclose(file);
 								break;
 							}
 						}
@@ -158,7 +159,7 @@ int main(int argc, char const *argv[])
 
 			//Input from the server prompt
 			//FILE* file = fopen(input, "w"); 
-			char * num_players_file = malloc(strlen(roomName)+strlen("_number_of_players.txt"));
+			char * num_players_file = malloc(strlen(roomName)+strlen("_number_of_players.txt")+1);
 			strcpy(num_players_file, roomName);
     		strcat(num_players_file, "_number_of_players.txt");
 			FILE* file = fopen(num_players_file, "r"); 
@@ -215,7 +216,7 @@ int main(int argc, char const *argv[])
 			}
 			printf("I'm out - %s\n",username);
 
-			char * players_online_file = malloc(strlen(roomName)+strlen("_players_online.txt"));
+			char * players_online_file = malloc(strlen(roomName)+strlen("_players_online.txt")+1);
 			strcpy(players_online_file, roomName);
     		strcat(players_online_file, "_players_online.txt");
 
@@ -228,7 +229,7 @@ int main(int argc, char const *argv[])
 			data[data_len-1] = '\0';
 			printf("%s - %s\n", data,username);
 
-			char * word_now_file = malloc(strlen(roomName)+strlen("_word_now.txt"));
+			char * word_now_file = malloc(strlen(roomName)+strlen("_word_now.txt")+1);
 			strcpy(word_now_file, roomName);
 			strcat(word_now_file, "_word_now.txt");
 
@@ -323,7 +324,7 @@ int main(int argc, char const *argv[])
 
 						//add in words of user => append in words_{count}.txt
 
-						char * individual_words_file = malloc(strlen(roomName)+strlen("words_")+strlen(username)+1);
+						char * individual_words_file = malloc(strlen(roomName)+strlen("words_")+strlen(username)+2);
 						strcpy(individual_words_file, roomName);
 			    		strcat(individual_words_file, "_words_");
 	    				strcat(individual_words_file, username);
@@ -402,7 +403,7 @@ int main(int argc, char const *argv[])
 
 						//add in words of user => append in words_{count}.txt
 
-						char * individual_words_file = malloc(strlen(roomName)+strlen("words_")+strlen(username)+1);
+						char * individual_words_file = malloc(strlen(roomName)+strlen("words_")+strlen(username)+2);
 						strcpy(individual_words_file, roomName);
 			    		strcat(individual_words_file, "_words_");
 	    				strcat(individual_words_file, username);
