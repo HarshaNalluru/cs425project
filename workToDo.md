@@ -7,3 +7,4 @@ Problems that are present in current Networks code
 * Input should not be accepted if it is not that client's turn.
 * Creating rooms that are password protected.
 * Once the game has started no other player can join that room until the game ends.
+* Should not accept a character other than alphabets in the input

@@ -10,7 +10,7 @@
 
 #define ERROR -1
 #define BUFFER 1024
-#define PORT_NUMBER 9055
+#define PORT_NUMBER 9052
 // ./client harshan:123456789@127.0.0.1
 int main(int argc, char *argv[])
 {
@@ -31,7 +31,7 @@ int main(int argc, char *argv[])
 	char * username = strtok(str,":");
 	char * password = strtok(NULL, "@");
 	char * ip_addr = strtok(NULL, "@");
-	char * word_now;
+	char * word_now;;
 
 	remote_server.sin_family = AF_INET;
 	remote_server.sin_port = htons(PORT_NUMBER);
@@ -64,25 +64,49 @@ int main(int argc, char *argv[])
 	char thanks[BUFFER] = "Agreed ";
 	send(sock, thanks, strlen(thanks), 0);
 
-
+	char message[BUFFER];
+	char * user;
+	int i = 0;
 	while(1){
-		char message[BUFFER];
 		len = recv(sock, message, BUFFER, 0);
+		if (i >0 && strcmp(word_now,"yesterday")==0 ){
+			printf("here goes......................3\n");
+		}
 		if (strcmp(message,"It's your turn\n")==0){
+			printf("IF ---- %s\n", message);	
 			message[len] = '\0';
 			printf("---------------------------------------It's your turn\nProvide a word #%s :", myusername);	
 			fgets(input, BUFFER, stdin);
+			//printf("~~~~~~~~~~~~~~~~ %s\n",input);
 			send(sock, input, strlen(input), 0);
+			for (int i = 0; i < BUFFER; ++i){
+				message[i] = '\0';
+			}
 		}
-		else{	
-			char * user;
+		else{
+			printf("ElSE ---- %s\n", message);	
 			word_now = strtok(message,":");
+			i++;
 			user = strtok(NULL, ":");
-			user[strlen(user) - 1] = '\0';
+			//user[] = '\0';
 			printf("#%s : %s\n",user,word_now);
 			send(sock, thanks, strlen(thanks), 0);
+			if (strcmp(word_now,"yesterday")==0){
+				printf("here goes......................1\n");
+			}
 			//char * ip_addr = strtok(NULL, "@");
-			user = NULL;
+			/*for (int i = 0; i < strlen(message); ++i){
+				message[i] = '\0';
+			}
+			for (int i = 0; i < strlen(user); ++i){
+				user[i] = '\0';
+			}*/
+			for (int i = 0; i < BUFFER; ++i){
+				message[i] = '\0';
+			}
+			if (strcmp(word_now,"yesterday")==0){
+				printf("here goes......................2\n");
+			}
 		}
 	}
 //

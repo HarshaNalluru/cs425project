@@ -10,7 +10,7 @@
 
 #define ERROR -1
 #define MAX_DATA 1024
-#define PORT_NUMBER 9055
+#define PORT_NUMBER 9052
 #define BUFFER 1024
 
 int count_global = 0;
@@ -230,6 +230,7 @@ int main(int argc, char const *argv[])
 							fgets(last_word, sizeof(last_word), latest);
 							fclose(latest);
 							if (strcmp(old_latest,last_word)!=0){
+								printf("lastword ------------ %s\n",last_word );
 								send(new, last_word, strlen(last_word), 0);
 								data_len = recv(new, temp, MAX_DATA, 0);
 								temp[data_len-1] = '\0';
