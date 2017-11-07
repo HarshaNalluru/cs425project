@@ -10,7 +10,7 @@
 
 #define ERROR -1
 #define MAX_DATA 1024
-#define PORT_NUMBER 9052
+#define PORT_NUMBER 9040	
 #define BUFFER 1024
 
 int count_global = 0;
@@ -259,7 +259,7 @@ int main(int argc, char const *argv[])
 
 						//recv
 						data_len = recv(new, data, MAX_DATA, 0);
-						data[data_len-1] = '\0';
+						data[data_len] = '\0';
 						printf("%s\n", data);
 
 
@@ -326,13 +326,13 @@ int main(int argc, char const *argv[])
 						printf("It's %s's turn\n",username);
 						
 						//send 
-						char Turn[MAX_DATA] = "It's your turn\n";
+						char Turn[MAX_DATA] = "It's your turn one\n";
 						send(new, Turn, strlen(Turn), 0);
 						
 						//recv
 						char word[MAX_DATA];
 						data_len = recv(new, word, MAX_DATA, 0);
-						word[data_len-1] = '\0';
+						word[data_len] = '\0';
 						printf("%s\n", word);
 
 
