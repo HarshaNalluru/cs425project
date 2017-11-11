@@ -21,7 +21,11 @@ int main(int argc, char *argv[])
 	char input[BUFFER];
 	char output[BUFFER];
 	char myusername[BUFFER];
+	char words[100][BUFFER];
 	int len;
+	for (int i = 0; i < 100; ++i){
+		words[i][0] = '\0';
+	}
 
 	if((sock = socket(AF_INET, SOCK_STREAM, 0)) == ERROR){
 		perror("socket : ");
@@ -82,6 +86,7 @@ int main(int argc, char *argv[])
 	char lastCh = '\0';
 	int penaltyTot = 0;
 	char penalty_str[BUFFER];
+	int word_i = 0;
 	while(1){
 		for (int i = 0; i < BUFFER; ++i){
 			message[i] = '\0';
@@ -139,9 +144,11 @@ int main(int argc, char *argv[])
 				scanf("%s",input);
 				if(strlen(input) == 0){
 					printf("Please enter a non null word !! Time is Ticking !!\n");
+					penaltyTot+=100;
 				}
 				else if (input[0] != lastCh){
 					printf("Follow the rules for the game!! Clock is ticking  - last letter not Same %c !!\n",lastCh);
+					penaltyTot+=100;
 				}
 				else{
 					int k=1;
@@ -153,16 +160,30 @@ int main(int argc, char *argv[])
 
 					if(k == 0){
 						printf("Follow the rules for the game!! Clock is ticking !!\n");
+						penaltyTot+=100;
 					}
 					else{
-						break;
+						int words_k = 0;
+						int already_used_word_flag = 0;
+						while(words_k<word_i){
+							if (strcmp(words[words_k],input)==0){
+								printf("Already used, Provide a different one!! Clock is ticking !!\n");
+								already_used_word_flag = 1;
+								penaltyTot+=15;
+								break;
+							}
+							words_k++;
+						}
+						if(already_used_word_flag != 1){
+							break;
+						}
 					}
 				}
 			}
 			
 			time_t end = time(0);
 			cpu_time_used = ((double) (end - start));
-			penaltyTot += ((int)(cpu_time_used*10));
+			penaltyTot += ((int)(cpu_time_used*10.0));
 			printf("Current penalty : %d\n",penaltyTot);
 			//printf("~~~~~~~~~~~~~~~~ %s\n",input);
 			send(sock, input, strlen(input), 0);
@@ -196,6 +217,8 @@ int main(int argc, char *argv[])
 			//printf("ElSE ---- %s\n", message);	
 			word_now = strtok(message,":");
 			i++;
+			strcpy(words[word_i],word_now);
+			word_i++;
 			user = strtok(NULL, ":");
 			penalty = strtok(NULL, ":");
 			//user[] = '\0';

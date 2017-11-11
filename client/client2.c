@@ -159,12 +159,13 @@ int main(int argc, char *argv[])
 					else{
 						int words_k = 0;
 						int already_used_word_flag = 0;
-						while(words_k<100){
+						while(words_k<word_i){
 							if (strcmp(words[words_k],input)==0){
 								printf("Already used, Provide a different one!! Clock is ticking !!\n");
 								already_used_word_flag = 1;
 								break;
 							}
+							words_k++;
 						}
 						if(already_used_word_flag != 1){
 							break;

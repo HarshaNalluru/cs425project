@@ -30,7 +30,7 @@ int main(int argc, char const *argv[])
 	char username[MAX_DATA];
 	char password[MAX_DATA];
 	char roomName[MAX_DATA];
-	int rounds = 8;
+	int rounds = 40;
 	int flag_rounds = 0;
 	int round = 0;
 	int count = 0;
