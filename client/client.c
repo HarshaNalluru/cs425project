@@ -12,7 +12,7 @@
 
 #define ERROR -1
 #define BUFFER 1024
-#define PORT_NUMBER 9015
+#define PORT_NUMBER 9089
 // ./client harshan:123456789@127.0.0.1
 int main(int argc, char *argv[])
 {
@@ -65,7 +65,7 @@ int main(int argc, char *argv[])
 	char thank[BUFFER] = "Thanks ";
 	send(sock, thank, strlen(thank), 0);
 
-
+	int flag_completed = 0;
 
 	strcpy(myusername,username);
 //Game Starts message
@@ -83,11 +83,12 @@ int main(int argc, char *argv[])
 	int penaltyTot = 0;
 	char penalty_str[BUFFER];
 	while(1){
-
+		for (int i = 0; i < BUFFER; ++i){
+			message[i] = '\0';
+		}
 		len = recv(sock, message, BUFFER, 0);
 		message[len] = '\0';
-		if(strcmp(message,"It's your turn one\n")==0)
-		{
+		if(strcmp(message,"It's your turn one\n")==0){
 			printf("---------------------------------------It's your turn\n Enter any word #%s :", myusername);	
 			time_t start = time(0);
 			double cpu_time_used;
@@ -95,29 +96,21 @@ int main(int argc, char *argv[])
 			
 			while(1){
 				scanf("%s",input);
-				if(strlen(input) == 0)
-				{
+				if(strlen(input) == 0){
 					printf("Please enter a non null word !! Time is Ticking !!\n");
 				}
-				else
-				{
+				else{
 					int k=1;
-					for (int i = 0; i < strlen(input)-1; ++i)
-					{
-						if(!isalpha(input[i]))
-						{
+					for (int i = 0; i < strlen(input)-1; ++i){
+						if(!isalpha(input[i])){
 							k=0;
 							printf("%c %d\n",input[i], isalpha(input[i]) );
 						}
 					}
-
-					if(k == 0)
-					{
+					if(k == 0){
 						printf("Follow the rules for the game!! Clock is ticking !!\n");
 					}
-
-					else
-					{
+					else{
 						break;
 					}
 				}
@@ -144,33 +137,24 @@ int main(int argc, char *argv[])
 			
 			while(1){
 				scanf("%s",input);
-				if(strlen(input) == 0)
-				{
+				if(strlen(input) == 0){
 					printf("Please enter a non null word !! Time is Ticking !!\n");
 				}
-				else if (input[0] != lastCh)
-				{
+				else if (input[0] != lastCh){
 					printf("Follow the rules for the game!! Clock is ticking  - last letter not Same %c !!\n",lastCh);
 				}
-
-				else
-				{
+				else{
 					int k=1;
-					for (int i = 0; i < strlen(input)-1; ++i)
-					{
-						if(!isalpha(input[i]))
-						{
+					for (int i = 0; i < strlen(input)-1; ++i){
+						if(!isalpha(input[i])){
 							k=0;
 						}
 					}
 
-					if(k == 0)
-					{
+					if(k == 0){
 						printf("Follow the rules for the game!! Clock is ticking !!\n");
 					}
-
-					else
-					{
+					else{
 						break;
 					}
 				}
@@ -188,6 +172,26 @@ int main(int argc, char *argv[])
 				message[i] = '\0';
 			}
 		}
+		else if (strcmp(message,"Scores")==0){
+			for (int i = 0; i < BUFFER; ++i){
+				message[i] = '\0';
+			}
+			len = recv(sock, message, BUFFER, 0);
+			message[len] = '\0';	
+			printf("Before Scores-------- %s\n", message);
+			printf("-----------#########--------------Scores----------#########---------\n");
+			char * user = strtok(message,"@:");
+			char * penal = strtok(NULL,"@:");
+			printf("%s\t#%s\n",user,penal);
+
+			int num = 3;
+			while(num--){			
+				user = strtok(NULL,"@:");
+				penal = strtok(NULL,"@:");
+				printf("%s\t#%s\n",user,penal);
+			}
+			flag_completed = 1;
+		}
 		else{
 			//printf("ElSE ---- %s\n", message);	
 			word_now = strtok(message,":");
@@ -202,6 +206,9 @@ int main(int argc, char *argv[])
 			for (int i = 0; i < BUFFER; ++i){
 				message[i] = '\0';
 			}
+		}
+		if (flag_completed ==1){
+			break;
 		}
 	}
 //

@@ -1,1 +1,1 @@
-rm room* server 
+rm room* server Birds*

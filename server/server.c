@@ -10,7 +10,7 @@
 
 #define ERROR -1
 #define MAX_DATA 1024
-#define PORT_NUMBER 9015
+#define PORT_NUMBER 9089
 #define BUFFER 1024
 
 int count_global = 0;
@@ -25,14 +25,20 @@ int main(int argc, char const *argv[])
 	int temp_len;
 	char data[MAX_DATA];
 	char penalty[MAX_DATA];
+	char penalty_temp[MAX_DATA];
 	char temp[MAX_DATA];
 	char username[MAX_DATA];
 	char password[MAX_DATA];
 	char roomName[MAX_DATA];
+	int rounds = 8;
+	int flag_rounds = 0;
+	int round = 0;
 	int count = 0;
 	pid_t PID;
+	FILE * file_w;
 
 	int number_of_players = 4;
+	char send_penalties[number_of_players][BUFFER];
 	int counting_players = 0;
 	//GameStarts
 	char input[BUFFER];
@@ -233,9 +239,17 @@ int main(int argc, char const *argv[])
 			strcpy(word_now_file, roomName);
 			strcat(word_now_file, "_word_now.txt");
 
+			char * words_all = malloc(strlen(roomName)+strlen("_words_all.txt")+1);
+			strcpy(words_all, roomName);
+			strcat(words_all, "_words_all.txt");
+
 			char * game_progress_file = malloc(strlen(roomName)+strlen("_game_progress.txt")+1);
 			strcpy(game_progress_file, roomName);
     		strcat(game_progress_file, "_game_progress.txt");
+
+    		char * rounds_file = malloc(strlen(roomName)+strlen("_rounds_file.txt")+1);
+			strcpy(rounds_file, roomName);
+    		strcat(rounds_file, "_rounds_file.txt");
 			//
 			while(1){
 				file = fopen(game_progress_file, "r"); 
@@ -266,19 +280,57 @@ int main(int argc, char const *argv[])
 						/*if (strcmp(user_status,"0100")==0){
 							printf("yeah----------in\n");
 						}*/
-			    		
-
 						FILE* latest = fopen(word_now_file, "r");
 						if(latest){
 							fgets(last_word, sizeof(last_word), latest);
 							fclose(latest);
 							if (strcmp(old_latest,last_word)!=0){
-								printf("lastword ------------ %s\n",last_word );
+
+								char last_word_cpy[BUFFER];
+								strcpy(last_word_cpy,last_word);
+								//strtok
+								char * word_now = strtok(last_word_cpy,":");
+								char * user = strtok(NULL, ":");
+								char * penalty_temp2 = strtok(NULL, ":");
+								//printf("lastword ------------ %s---%s\n",last_word,user );
+								
+
+								// FILE* users_file = fopen(players_online_file, "r"); 
+								// int i = 0;
+								// while (fgets(line, sizeof(line), users_file)) {
+								// 	if (strcmp(line,user)){
+								// 		strcpy(send_penalties[i%4],penalty_temp2);
+								// 		strcat(send_penalties[i%4],"@");
+								// 		strcat(send_penalties[i%4],user);
+								// 		strcat(send_penalties[i%4],":");
+								// 		int k = 3;
+								// 		printf("----------------###################%d, %s----------------------\n",i,user);
+								// 		while(k){
+								// 			printf("%s\n",send_penalties[k] );
+								// 			k--;
+								// 		}
+								// 		printf("----------------###################----------------------\n");
+								// 	}
+								// 	i++;
+								// }
+								// fclose(users_file);
+
 								send(new, last_word, strlen(last_word), 0);
+								//printf("sent : %s @%s\n",last_word,user );
 								data_len = recv(new, temp, MAX_DATA, 0);
 								temp[data_len-1] = '\0';
 							}
-							strcpy(old_latest,last_word);	
+							strcpy(old_latest,last_word);
+							file = fopen(rounds_file, "r");
+							if (file){
+								//file = fopen(rounds_file, "r");
+								fgets(line, sizeof(line), file);
+								if (atoi(line) == rounds){
+									flag_rounds = 1;
+									break;
+								}
+								fclose(file);	
+							}
 						}
 					}
 					/*if (strcmp(user_status,"0100")){
@@ -291,7 +343,7 @@ int main(int argc, char const *argv[])
 					fclose(file_game_progress);
 					if(user_status[count%4] == '1'){
 
-						printf("#%s : ", username);
+						//printf("#%s : ", username);
 
 						//printf("It's %s's turn\n",username);
 						
@@ -307,7 +359,7 @@ int main(int argc, char const *argv[])
 						data_len = recv(new, data, MAX_DATA, 0);
 
 						data[data_len] = '\0';
-						printf("%s HELLO I AM ALIVE\n", data);
+						//printf("%s HELLO I AM ALIVE\n", data);
 
 
 						int penalty_len = recv(new, penalty, MAX_DATA, 0);
@@ -319,6 +371,35 @@ int main(int argc, char const *argv[])
 						FILE* file_word_now = fopen(word_now_file, "w");
 						fprintf(file_word_now, "%s:%s:%s", data,username,penalty);
 						fclose(file_word_now);
+
+						FILE* file_words_all = fopen(words_all, "a");
+						fprintf(file_words_all, "\n%s@%s:", username,penalty);
+						fclose(file_words_all);
+
+
+						file = fopen(rounds_file, "r"); 
+						if (file){	
+							int temp;
+							while (fgets(line, sizeof(line), file)) {
+								//printf("#number_of_players : %s\n", line);
+								temp = atoi (line);
+								temp++;
+								fclose(file);
+								file_w = fopen(rounds_file, "w"); 
+								fprintf(file_w, "%d", temp);
+								fclose(file_w);
+								break;
+							}
+							if (temp == rounds){
+								flag_rounds = 1;
+							}
+						}
+						else{
+							fclose(file);
+							file_w = fopen(rounds_file, "w"); 
+							fprintf(file_w, "%d", 1);
+							fclose(file_w);
+						}
 
 
 
@@ -332,6 +413,22 @@ int main(int argc, char const *argv[])
 						fprintf(file_word_user, "%s:%s:%s\n", data,username,penalty);
 						fclose(file_word_user);
 
+
+						// strcpy(send_penalties[count%4],penalty);
+						// strcat(send_penalties[count%4],"@");
+						// strcat(send_penalties[count%4],username);
+						// strcat(send_penalties[count%4],":");
+
+						file = fopen(rounds_file, "r");
+						if (file){
+							//file = fopen(rounds_file, "r");
+							fgets(line, sizeof(line), file);
+							if (atoi(line) == rounds){
+								flag_rounds = 1;
+								break;
+							}
+							fclose(file);	
+						}				
 
 						//update game_progress.txt
 						FILE* file_w = fopen(game_progress_file, "w"); 
@@ -401,6 +498,35 @@ int main(int argc, char const *argv[])
 						fprintf(file_word_now, "%s:%s:%s", word,username,penalty);
 						fclose(file_word_now);
 
+
+						FILE* file_words_all = fopen(words_all, "a");
+						fprintf(file_words_all, "%s@%s:", username,penalty);
+						fclose(file_words_all);
+
+
+						file = fopen(rounds_file, "r"); 
+						if (file){	
+							int temp;
+							while (fgets(line, sizeof(line), file)) {
+								//printf("#number_of_players : %s\n", line);
+								temp = atoi (line);
+								temp++;
+								fclose(file);
+								file_w = fopen(rounds_file, "w"); 
+								fprintf(file_w, "%d", temp);
+								fclose(file_w);
+								break;
+							}
+							if (temp == rounds){
+								flag_rounds = 1;
+							}
+						}
+						else{
+							//fclose(file);
+							file_w = fopen(rounds_file, "w"); 
+							fprintf(file_w, "%d", 1);
+							fclose(file_w);
+						}
 						//add in words of user => append in words_{count}.txt
 
 						char * individual_words_file = malloc(strlen(roomName)+strlen("words_")+strlen(username)+2);
@@ -410,14 +536,30 @@ int main(int argc, char const *argv[])
 						FILE* file_word_user = fopen(individual_words_file, "a");
 						fprintf(file_word_user, "%s:%s:%s\n", word,username,penalty);
 						fclose(file_word_user);
-
+						
+						// strcpy(send_penalties[count%4],penalty);
+						// strcat(send_penalties[count%4],"@");
+						// strcat(send_penalties[count%4],username);
+						// strcat(send_penalties[count%4],":");
 						//update game_progress.txt
+
+						file = fopen(rounds_file, "r");
+						if (file){
+							//file = fopen(rounds_file, "r");
+							fgets(line, sizeof(line), file);
+							if (atoi(line) == rounds){
+								flag_rounds = 1;
+								break;
+							}
+							fclose(file);	
+						}				
 						file_w = fopen(game_progress_file, "w"); 
 						FILE* users_file = fopen(players_online_file, "r"); 
 						int i = 0;
 						while (fgets(line, sizeof(line), users_file)) {
 							if (count%4 == i-1){
 								fprintf(file_w, "%d", 1);
+								//printf("Next turn for%s by %s\n",line,username );
 							}
 							else{
 								fprintf(file_w, "%d", 0);
@@ -429,9 +571,45 @@ int main(int argc, char const *argv[])
 					}
 				}
 				//fclose(file);
+				file = fopen(rounds_file, "r");
+				if (file){
+					//file = fopen(rounds_file, "r");
+					fgets(line, sizeof(line), file);
+					if (atoi(line) == rounds){
+						flag_rounds = 1;
+						break;
+					}
+					fclose(file);	
+				}				
+			}
+			if (flag_rounds==1){
+				int temp=number_of_players-1;
+				char penalty_str[BUFFER*4];
+				
+				FILE* words_all_file = fopen(words_all, "r"); 
+				int i = 0;
+				while (fgets(line, sizeof(line), words_all_file)) {
+					line[strlen(line)-1] = '\0';
+					strcpy(send_penalties[i%4],line);
+					i++;	
+				}
+				fclose(words_all_file);
+
+				i = 0;
+				strcpy(penalty_str,send_penalties[i]);
+				i++;
+				while(i<4){
+					strcat(penalty_str,send_penalties[i]);
+					i++;
+				}
+
+				printf("penalty str ----------------%s\n",penalty_str);
+				char Turn[MAX_DATA] = "Scores";
+				send(new, Turn, strlen(Turn), 0);
+				send(new, penalty_str, strlen(penalty_str), 0);
 			}
 
-			printf("%s is out-------------///////////////\n",username );
+			//printf("%s is out-------------///////////////\n",username );
 
 /*			data_len = recv(new, data, MAX_DATA, 0);
 			data[data_len-1] = '\0';
