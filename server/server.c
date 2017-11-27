@@ -10,7 +10,7 @@
 
 #define ERROR -1
 #define MAX_DATA 1024
-#define PORT_NUMBER 9089
+#define PORT_NUMBER 9080
 #define BUFFER 1024
 
 int count_global = 0;

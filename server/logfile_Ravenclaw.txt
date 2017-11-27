@@ -1,0 +1,79 @@
+#Server: Checking for the password...
+#Server: Welcome to the room : Ravenclaw
+### Game Starts ###
+---------------------------------------It's your turn
+ Enter any word #harshan :flow
+Current penalty : 50
+#harshan : flow (Current game penalty: 50 )
+#carrie : water (Current game penalty: 30 )
+#finjons : rise (Current game penalty: 40 )
+#lobroke : easy (Current game penalty: 40 )
+---------------------------------------It's your turn
+Provide a word #harshan :yellow
+Current penalty : 120
+#harshan : yellow (Current game penalty: 120 )
+#carrie : wise (Current game penalty: 80 )
+#finjons : early (Current game penalty: 185 )
+#lobroke : yatch (Current game penalty: 385 )
+---------------------------------------It's your turn
+Provide a word #harshan :hike
+Current penalty : 210
+#harshan : hike (Current game penalty: 210 )
+#carrie : ether (Current game penalty: 150 )
+#finjons : run (Current game penalty: 215 )
+#lobroke : never (Current game penalty: 415 )
+---------------------------------------It's your turn
+Provide a word #harshan :ruin
+Current penalty : 240
+#harshan : ruin (Current game penalty: 240 )
+#carrie : noise (Current game penalty: 230 )
+#finjons : extra (Current game penalty: 295 )
+#lobroke : animal (Current game penalty: 455 )
+---------------------------------------It's your turn
+Provide a word #harshan :love
+Current penalty : 280
+#harshan : love (Current game penalty: 280 )
+#carrie : exit (Current game penalty: 270 )
+#finjons : toy (Current game penalty: 335 )
+#lobroke : yesterday (Current game penalty: 505 )
+---------------------------------------It's your turn
+Provide a word #harshan :year
+Current penalty : 320
+#harshan : year (Current game penalty: 320 )
+#carrie : rain (Current game penalty: 300 )
+#finjons : nice (Current game penalty: 375 )
+#lobroke : even (Current game penalty: 555 )
+---------------------------------------It's your turn
+Provide a word #harshan :not
+Current penalty : 430
+#harshan : not (Current game penalty: 430 )
+#carrie : tray (Current game penalty: 340 )
+#finjons : yuppy (Current game penalty: 485 )
+#lobroke : yack (Current game penalty: 595 )
+---------------------------------------It's your turn
+Provide a word #harshan :key
+Current penalty : 470
+#harshan : key (Current game penalty: 470 )
+#carrie : yuck (Current game penalty: 370 )
+#finjons : kite (Current game penalty: 535 )
+#lobroke : envy (Current game penalty: 665 )
+---------------------------------------It's your turn
+Provide a word #harshan :yes
+Current penalty : 520
+#harshan : yes (Current game penalty: 520 )
+#carrie : say (Current game penalty: 410 )
+#finjons : you (Current game penalty: 565 )
+#lobroke : umbrella (Current game penalty: 715 )
+---------------------------------------It's your turn
+Provide a word #harshan :any
+Current penalty : 580
+#harshan : any (Current game penalty: 580 )
+#carrie : yours (Current game penalty: 600 )
+#finjons : sorry (Current game penalty: 605 )
+#lobroke : yet (Current game penalty: 900 )
+Before Scores-------- harshan@580:carrie@600:finjons@605:lobroke@900
+-----------#########--------------Scores----------#########---------
+harshan	#580
+carrie	#600
+finjons	#605
+lobroke	#900

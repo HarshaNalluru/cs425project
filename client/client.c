@@ -12,7 +12,7 @@
 
 #define ERROR -1
 #define BUFFER 1024
-#define PORT_NUMBER 9089
+#define PORT_NUMBER 9080
 // ./client harshan:123456789@127.0.0.1
 int main(int argc, char *argv[])
 {
@@ -143,11 +143,11 @@ int main(int argc, char *argv[])
 			while(1){
 				scanf("%s",input);
 				if(strlen(input) == 0){
-					printf("Please enter a non null word !! Time is Ticking !!\n");
+					printf("Please enter a non null word !! Time is Ticking !!\n\nOne more Chance #%s :",myusername);
 					penaltyTot+=100;
 				}
 				else if (input[0] != lastCh){
-					printf("Follow the rules for the game!! Clock is ticking  - last letter not Same %c !!\n",lastCh);
+					printf("Follow the rules for the game!! Clock is ticking  - first letter not same as '%c' !!\nOne more Chance #%s :",lastCh,myusername);
 					penaltyTot+=100;
 				}
 				else{
@@ -159,7 +159,7 @@ int main(int argc, char *argv[])
 					}
 
 					if(k == 0){
-						printf("Follow the rules for the game!! Clock is ticking !!\n");
+						printf("Follow the rules for the game!! Clock is ticking !!\nOne more Chance #%s :",myusername);
 						penaltyTot+=100;
 					}
 					else{
@@ -167,7 +167,7 @@ int main(int argc, char *argv[])
 						int already_used_word_flag = 0;
 						while(words_k<word_i){
 							if (strcmp(words[words_k],input)==0){
-								printf("Already used, Provide a different one!! Clock is ticking !!\n");
+								printf("Already used, Provide a different one!! Clock is ticking !!\nOne more Chance #%s :",myusername);
 								already_used_word_flag = 1;
 								penaltyTot+=15;
 								break;
